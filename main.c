@@ -2,14 +2,20 @@
 #include "array_utils.h"
 
 int main(void) {
-  assert_for_int();
-  assert_for_long();
-  assert_for_float();
-  assert_for_char();
-  assert_for_double();
-  assert_for_areEqual();
-  assert_for_resize();
-  assert_for_findIndex();
-  assert_for_findFirst();
+  test_for_int();
+  test_for_long();
+  test_for_float();
+  test_for_char();
+  test_for_double();
+  test_for_areEqual();
+  test_for_resize();
+  test_for_findIndex();
+  test_for_findFirst();
+  test_for_findLast();
+  test_for_countMatch();
+  test_for_filter();
+  test_for_map();
+  test_for_forEach();
+  test_for_reduce();
   return 0;
 }

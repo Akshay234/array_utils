@@ -39,16 +39,6 @@ void dispose(ArrayUtil util){
   free(util.base);
 }
 
-int isDivisible(void *given_ele, void *array_ele){
-  int result = (*(int *)array_ele) % (*(int *)given_ele) == 0;
-  return result;
-}
-
-int isEven(void *given_ele,void *array_ele){
-  int result = *(int *)array_ele % 2 == 0;
-  return result;
-}
-
 void *findFirst(ArrayUtil util,_match mh,void *given_ele){
   for (size_t i = 0; i < util.length; i++) {
     if(mh(given_ele,util.base) == 1){
@@ -57,4 +47,65 @@ void *findFirst(ArrayUtil util,_match mh,void *given_ele){
     util.base += util.typeSize;
   }
   return (void *)NULL;
+}
+
+
+void *findLast(ArrayUtil util,_match mh,void *given_ele){
+  void *lastMatch = (void *)NULL;
+  for (size_t i = 0; i < util.length; i++) {
+    if(mh(given_ele,util.base) == 1){
+        lastMatch = util.base;
+    }
+    util.base += util.typeSize;
+  }
+  return lastMatch;
+}
+
+int count(ArrayUtil util,_match mh, void *given_ele){
+  int counter = 0;
+  for (size_t i = 0; i < util.length; i++) {
+    if(mh(given_ele,util.base) == 1){
+        counter++;
+    }
+    util.base += util.typeSize;
+  }
+  return counter;
+}
+
+int filter(ArrayUtil util,_match mh, void* given_ele, void** destination, int maxItems){
+  int counter = 0;
+  void *array = *destination;
+  for (size_t i = 0; i < maxItems; i++) {
+    if(mh(given_ele,util.base) == 1){
+      memcpy(array,util.base,util.typeSize);
+      counter++;
+      array += util.typeSize;
+    }
+    util.base += util.typeSize;
+  }
+  return counter;
+}
+
+void map(ArrayUtil source, ArrayUtil destination, ConvertFunc* convert, void* given_ele){
+  for (size_t i = 0; i < source.length; i++) {
+    convert(given_ele,source.base,destination.base);
+    source.base += source.typeSize;
+    destination.base += destination.typeSize;
+  }
+}
+
+void forEach(ArrayUtil util, OperationFunc* operation, void* hint){
+  for (size_t i = 0; i < util.length; i++) {
+    operation(hint,util.base);
+    util.base += util.typeSize;
+  }
+}
+
+void* reduce(ArrayUtil util, ReducerFunc* reducer, void* given_ele, void* intialValue){
+  void *initial = intialValue;
+  for (size_t i = 0; i < util.length; i++) {
+    initial = reducer(given_ele,initial,util.base);
+    util.base += util.typeSize;
+  }
+  return initial;
 }
