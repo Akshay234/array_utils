@@ -1,3 +1,6 @@
+typedef int (filterFn)(void *,void *);
+typedef void (mapFn)(void *,void *,void *);
+typedef void *(reduceFn)(void *,void *,void *);
 typedef struct element{
   void *value;
   struct element *next;
@@ -19,5 +22,8 @@ void forEach(LinkedList, ElementProcessor);
 void * getElementAt(LinkedList, int);
 int indexOf(LinkedList, void *);
 void *deleteElementAt(LinkedList *, int);
-void test_for_asArray();
 int asArray(LinkedList, void **, int);
+LinkedList filter(LinkedList, filterFn, void * );
+LinkedList reverse(LinkedList);
+LinkedList map(LinkedList, mapFn, void * );
+void * reduce(LinkedList, reduceFn, void * ,void *);

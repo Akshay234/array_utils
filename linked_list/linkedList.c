@@ -43,13 +43,12 @@ void forEach(LinkedList list, ElementProcessor e){
 }
 
 void *getElementAt(LinkedList list, int index){
-  Element *val =list.first;
+  Element *val = list.first;
   int counter = 0;
   while(counter != index){
       val = val->next;
       counter += 1;
   }
-
   return val->value;
 }
 
@@ -80,10 +79,10 @@ void delete_last_ele(LinkedList *list,Element *list_ele){
 
 void *deleteElementAt(LinkedList *list, int index){
   void *deleted_Value = NULL;
+  Element *list_ele = list->first;
   if(index < 0 || index > list->total_ele-1){
     return deleted_Value;
   }
-  Element *list_ele = list->first;
   if(index == 0){
     delete_first_ele(list,&deleted_Value);
   }
@@ -118,4 +117,47 @@ int asArray(LinkedList list, void **array, int maxElements){
     counter++;
   }
   return counter;
+}
+
+LinkedList filter(LinkedList list , filterFn refiner, void *ele ){
+  LinkedList refinedList = createList();
+  Element *list_ele = list.first;
+  for (size_t i = 0; i < list.total_ele; i++) {
+    if(refiner(list_ele->value,ele)){
+      add_to_list(&refinedList,list_ele->value);
+    }
+    list_ele = list_ele->next;
+  }
+  return refinedList;
+}
+
+LinkedList reverse(LinkedList list){
+  LinkedList reversedList = createList();
+  for (size_t i = list.total_ele ; i > 0 ; i--) {
+    add_to_list(&reversedList,getElementAt(list,i-1));
+  }
+  return reversedList;
+}
+
+LinkedList map(LinkedList list, mapFn mapper , void *ele){
+  Element *list_ele = list.first;
+  LinkedList mappedList = createList();
+  for (size_t i = 0; i < list.total_ele; i++) {
+    void *val = (void *)malloc(sizeof(void *));
+    mapper(ele,list_ele->value,val);
+    add_to_list(&mappedList,val);
+    list_ele = list_ele->next;
+  }
+  return mappedList;
+}
+
+void *reduce(LinkedList list, reduceFn reducer , void *hint, void *initialValue){
+  void *previousValue = (void *)malloc(sizeof(void *));
+  previousValue = initialValue;
+  Element *list_ele = list.first;
+  for (size_t i = 0; i < list.total_ele; i++) {
+    previousValue = reducer(hint,previousValue,list_ele->value);
+    list_ele = list_ele->next;
+  }
+  return previousValue;
 }

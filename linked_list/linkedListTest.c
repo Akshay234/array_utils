@@ -176,9 +176,132 @@ void test_for_asArray(){
   add_to_list(&list1,&val5);
   add_to_list(&list1,&val6);
   void *array[10];
-  int arrayLength = asArray(list1,array,3);
-  assert(arrayLength == 3);
+  int arrayLength = asArray(list1,array,5);
+  assert(arrayLength == 5);
   assert(*(int *)array[0] == 1);
   assert(*(int *)array[1] == 2);
   assert(*(int *)array[2] == 3);
+  assert(*(int *)array[3] == 4);
+  assert(*(char *)array[4] == 'A');
 }
+
+int greater_than(void *num,void *hint){
+  return *(int *)num > *(int *)hint;
+}
+
+void test_for_filter(){
+  LinkedList list1 = createList();
+  int val1 = 11, val2 = 12, val3 = 13, val4 = 15;
+  int val5 = 16;
+  float val6 = 13.5;
+  add_to_list(&list1,&val1);
+  add_to_list(&list1,&val2);
+  add_to_list(&list1,&val3);
+  add_to_list(&list1,&val4);
+  add_to_list(&list1,&val5);
+  add_to_list(&list1,&val6);
+  int hint = 13;
+  LinkedList refinedList = filter(list1,greater_than,&hint);
+  assert(refinedList.total_ele == 3);
+  assert(*(int *)refinedList.first->value == 15);
+  assert(*(float *)refinedList.last->value == 13.5);
+}
+
+void test_for_reverse(){
+  LinkedList list1 = createList();
+  int val1 = 11, val2 = 12, val3 = 13, val4 = 15;
+  int val5 = 16;
+  float val6 = 13.5;
+  add_to_list(&list1,&val1);
+  add_to_list(&list1,&val2);
+  add_to_list(&list1,&val3);
+  add_to_list(&list1,&val4);
+  add_to_list(&list1,&val5);
+  add_to_list(&list1,&val6);
+  LinkedList reversedList = reverse(list1);
+  assert(reversedList.total_ele == 6);
+  assert(*(float *)reversedList.first->value == 13.5);
+  assert(*(int *)reversedList.last->value == 11);
+}
+
+void increment_by(void *inc_val, void *list_ele, void *destItem){
+  *(int *)destItem = *(int *)list_ele + *(int *)inc_val;
+}
+
+void test_for_map(){
+  LinkedList list1 = createList();
+  int val1 = 11, val2 = 12, val3 = 13, val4 = 15;
+  int val5 = 16;
+  add_to_list(&list1,&val1);
+  add_to_list(&list1,&val2);
+  add_to_list(&list1,&val3);
+  add_to_list(&list1,&val4);
+  add_to_list(&list1,&val5);
+  int hint = 3;
+  LinkedList incrementedList = map(list1,increment_by,&hint);
+  assert(incrementedList.total_ele == 5);
+  assert(*(int *)incrementedList.first->value == 14);
+  assert(*(int *)incrementedList.last->value == 19);
+}
+
+void *add_all_nums(void *hint,void *previousValue,void *currentValue){
+  *(int *)previousValue += *(int *)currentValue;
+  return previousValue;
+}
+
+void *concat_all_alphabets(void *hint,void *previousValue,void *currentValue){
+  if(previousValue != NULL){
+    *(char *)previousValue += *(char *)currentValue;
+  }
+  return previousValue;
+}
+
+//-------------------------------reduce-------------------------------------------//
+
+void test_for_int_in_reduce(){
+  LinkedList list1 = createList();
+  int val1 = 11, val2 = 12, val3 = 13, val4 = 15, val5 = 16;
+  add_to_list(&list1,&val1);
+  add_to_list(&list1,&val2);
+  add_to_list(&list1,&val3);
+  add_to_list(&list1,&val4);
+  add_to_list(&list1,&val5);
+  int hint = 3;
+  int initial = 0;
+  void *reduced_result = reduce(list1,add_all_nums,&hint,&initial);
+  assert(*(int *)reduced_result == 67);
+}
+
+// void test_for_char_in_reduce(){
+//   LinkedList list1 = createList();
+//   char val1 = 'A', val2 = 'K', val3 = 'S', val4 = 'H', val5 = 'A', val6 = 'Y';
+//   add_to_list(&list1,&val1);
+//   add_to_list(&list1,&val2);
+//   add_to_list(&list1,&val3);
+//   add_to_list(&list1,&val4);
+//   add_to_list(&list1,&val5);
+//   add_to_list(&list1,&val6);
+//   int hint = 'A';
+//   int *initial = NULL;
+//   void *reduced_result = reduce(list1,concat_all_alphabets,&hint,&initial);
+//   char *c = (char *)reduced_result;
+//   printf("%s\n",c);
+//   // assert(*(char *)reduced_result == 'A');
+// }
+// void for_double(){
+  // LinkedList list1 = createList();
+  // double val1 = 2147483648, val2 = 12, val3 = 13, val4 = 15,val5 = 16;
+  // add_to_list(&list1,&val1);
+  // add_to_list(&list1,&val2);
+  // add_to_list(&list1,&val3);
+  // add_to_list(&list1,&val4);
+  // add_to_list(&list1,&val5);
+  // double hint = 3;
+  // double *initial = 50;
+  // void *reduced_result = reduce(list1,add_all_nums,&hint,&initial);
+  // assert(*(double *)reduced_result == 67);
+
+// }
+  // void for_float(){
+  //
+  // }

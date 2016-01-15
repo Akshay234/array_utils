@@ -38,15 +38,17 @@ function extractTests(fileContent) {
     });
 };
 
-function printFormattedErr(err) {
-   process.stdout.write(err);
+function printFormattedErr(stderr,err) {
+   process.stderr.write(stderr);
+   err&&console.log(err);
+
 }
 
 function printResult(test, allTests, summary,dependency,stop) {
     return function(err, stdout, stderr) {
         printTestName(test);
         if (stdout) console.log(stdout);
-        if (err || stderr) summary.failed++, printFormattedErr(stderr);
+        if (err || stderr) summary.failed++, printFormattedErr(stderr,err);
         else summary.passed++
         console.log('--------------');
         runAllTests(allTests, summary,dependency,stop);
@@ -89,7 +91,7 @@ function runAllTests(tests, summary,dependency,stop) {
         child_process.execSync(command);
         child_process.exec('./arrayUtilTest', printResult(test, tests, summary,dependency,stop));
     }catch(e){ console.log(e.message)};
-    
+
 };
 
 function matchedTest(option){
