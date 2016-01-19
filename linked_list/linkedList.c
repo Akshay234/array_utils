@@ -43,6 +43,7 @@ void forEach(LinkedList list, ElementProcessor e){
 }
 
 void *getElementAt(LinkedList list, int index){
+  if(index >= list.total_ele || index < 0){return NULL;}
   Element *val = list.first;
   int counter = 0;
   while(counter != index){
@@ -55,7 +56,7 @@ void *getElementAt(LinkedList list, int index){
 int indexOf(LinkedList list, void *val){
   Element *list_ele = list.first;
   for (size_t i = 0; i < list.total_ele; i++) {
-    int comparedVal = memcmp(list_ele->value,val,sizeof(void));
+    int comparedVal = memcmp(list_ele->value,val,sizeof(void *));
     if(comparedVal == 0){return i;}
     list_ele = list_ele->next;
   }
@@ -109,12 +110,15 @@ int asArray(LinkedList list, void **array, int maxElements){
   int counter = 0;
   Element *list_ele = list.first;
   for (size_t i = 0; i < maxElements; i++) {
-    if(list_ele == NULL){
-      return counter;
+    if(array[counter]){
+      void *val = (void *)calloc(1,sizeof(void *));
+      if(list_ele){
+        val = list_ele->value;
+        list_ele = list_ele->next;
+      }
+      array[counter] = val;
+      counter++;
     }
-    array[counter] = list_ele->value;
-    list_ele = list_ele->next;
-    counter++;
   }
   return counter;
 }
